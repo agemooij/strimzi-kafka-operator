@@ -25,6 +25,8 @@ import io.strimzi.api.kafka.model.DoneableKafkaTopic;
 import io.strimzi.api.kafka.model.Kafka;
 import io.strimzi.api.kafka.model.KafkaConnect;
 import io.strimzi.api.kafka.model.KafkaTopic;
+import io.strimzi.systemtest.timemeasuring.Operation;
+import io.strimzi.systemtest.timemeasuring.TimeMeasuringSystem;
 import io.strimzi.test.TestUtils;
 import io.strimzi.test.k8s.KubeClient;
 import io.strimzi.test.k8s.KubeClusterException;
@@ -81,6 +83,8 @@ public class AbstractST {
 
     private Resources resources;
     static String testName;
+    static String operationID;
+    static String testClass;
 
     protected static NamespacedKubernetesClient namespacedClient() {
         return client.inNamespace(kubeClient.namespace());
@@ -384,5 +388,10 @@ public class AbstractST {
 
     Resources resources() {
         return resources;
+    }
+
+    String startTimeMeasuring(Operation operation) {
+        TimeMeasuringSystem.setTestName(testClass, testName);
+        return TimeMeasuringSystem.startOperation(operation);
     }
 }

@@ -40,7 +40,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromEntityOperatorDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String entityOperatorDeploymentName = entityOperatorDeploymentName(CLUSTER_NAME);
         LOGGER.info("Running testRecoveryFromEntityOperatorDeletion with cluster {}", CLUSTER_NAME);
@@ -57,7 +57,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromKafkaStatefulSetDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String kafkaStatefulSetName = kafkaClusterName(CLUSTER_NAME);
         LOGGER.info("Running deleteKafkaStatefulSet with cluster {}", CLUSTER_NAME);
@@ -74,7 +74,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromZookeeperStatefulSetDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String zookeeperStatefulSetName = zookeeperClusterName(CLUSTER_NAME);
         LOGGER.info("Running deleteZookeeperStatefulSet with cluster {}", CLUSTER_NAME);
@@ -91,7 +91,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromKafkaServiceDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String kafkaServiceName = kafkaServiceName(CLUSTER_NAME);
         LOGGER.info("Running deleteKafkaService with cluster {}", CLUSTER_NAME);
@@ -107,7 +107,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromZookeeperServiceDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String zookeeperServiceName = zookeeperServiceName(CLUSTER_NAME);
 
@@ -124,7 +124,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromKafkaHeadlessServiceDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String kafkaHeadlessServiceName = kafkaHeadlessServiceName(CLUSTER_NAME);
         LOGGER.info("Running deleteKafkaHeadlessService with cluster {}", CLUSTER_NAME);
@@ -140,7 +140,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromZookeeperHeadlessServiceDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String zookeeperHeadlessServiceName = zookeeperHeadlessServiceName(CLUSTER_NAME);
         LOGGER.info("Running deleteKafkaHeadlessService with cluster {}", CLUSTER_NAME);
@@ -156,7 +156,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromKafkaMetricsConfigDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String kafkaMetricsConfigName = kafkaMetricsConfigName(CLUSTER_NAME);
         LOGGER.info("Running deleteKafkaMetricsConfig with cluster {}", CLUSTER_NAME);
@@ -173,7 +173,7 @@ class RecoveryST extends AbstractST {
 
     @Test
     void testRecoveryFromZookeeperMetricsConfigDeletion() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         // kafka cluster already deployed
         String zookeeperMetricsConfigName = zookeeperMetricsConfigName(CLUSTER_NAME);
         LOGGER.info("Running deleteZookeeperMetricsConfig with cluster {}", CLUSTER_NAME);
@@ -205,11 +205,6 @@ class RecoveryST extends AbstractST {
 
     private static Resources classResources() {
         return classResources;
-    }
-
-    private String startTimeMeasuring() {
-        TimeMeasuringSystem.setTestName(testClass, testName);
-        return TimeMeasuringSystem.startOperation(Operation.TEST_EXECUTION);
     }
 
     private void assertNoErrorLogged() {

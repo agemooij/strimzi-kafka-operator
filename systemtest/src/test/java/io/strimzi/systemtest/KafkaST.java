@@ -96,9 +96,6 @@ class KafkaST extends AbstractST {
     private static final String TOPIC_NAME = "test-topic";
 
     static KubernetesClient client = new DefaultKubernetesClient();
-    private static String operationID;
-    private static String testClass;
-    private static String testName;
 
     private Random rng = new Random();
 
@@ -124,7 +121,7 @@ class KafkaST extends AbstractST {
     @Test
     @Tag(ACCEPTANCE)
     void testKafkaAndZookeeperScaleUpScaleDown() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.SCALE_UP);
         resources().kafkaEphemeral(CLUSTER_NAME, 3).done();
 
         testDockerImagesForKafkaCluster(CLUSTER_NAME, 3, 1, false);
@@ -156,10 +153,12 @@ class KafkaST extends AbstractST {
         assertThat(events, hasAllOfReasons(Scheduled, Pulled, Created, Started));
         assertThat(events, hasNoneOfReasons(Failed, Unhealthy, FailedSync, FailedValidation));
         //Test that CO doesn't have any exceptions in log
+        TimeMeasuringSystem.stopOperation(operationID);
         assertNoCoErrorsLogged(TimeMeasuringSystem.getDurationInSecconds(testClass, testName, operationID));
 
         // scale down
         LOGGER.info("Scaling down");
+        operationID = startTimeMeasuring(Operation.SCALE_DOWN);
         //client.apps().statefulSets().inNamespace(NAMESPACE).withName(kafkaStatefulSetName(CLUSTER_NAME)).scale(initialReplicas, true);
         replaceKafkaResource(CLUSTER_NAME, k -> {
             k.getSpec().getKafka().setReplicas(initialReplicas);
@@ -178,13 +177,14 @@ class KafkaST extends AbstractST {
         //Test that stateful set has event 'SuccessfulDelete'
         assertThat(getEvents("StatefulSet", kafkaClusterName(CLUSTER_NAME)), hasAllOfReasons(SuccessfulDelete));
         //Test that CO doesn't have any exceptions in log
+        TimeMeasuringSystem.stopOperation(operationID);
         assertNoCoErrorsLogged(TimeMeasuringSystem.getDurationInSecconds(testClass, testName, operationID));
     }
 
     @Test
     @Tag(REGRESSION)
     void testZookeeperScaleUpScaleDown() {
-        operationID = startTimeMeasuring();
+        operationID = startTimeMeasuring(Operation.SCALE_UP);
         resources().kafkaEphemeral(CLUSTER_NAME, 3).done();
         // kafka cluster already deployed
         LOGGER.info("Running zookeeperScaleUpScaleDown with cluster {}", CLUSTER_NAME);
@@ -222,10 +222,12 @@ class KafkaST extends AbstractST {
         assertThat(eventsForSecondPod, hasNoneOfReasons(Failed, Unhealthy, FailedSync, FailedValidation));
 
         //Test that CO doesn't have any exceptions in log
+        TimeMeasuringSystem.stopOperation(operationID);
         assertNoCoErrorsLogged(TimeMeasuringSystem.getDurationInSecconds(testClass, testName, operationID));
 
         // scale down
         LOGGER.info("Scaling down");
+        operationID = startTimeMeasuring(Operation.SCALE_DOWN);
         replaceKafkaResource(CLUSTER_NAME, k -> {
             k.getSpec().getZookeeper().setReplicas(1);
         });
@@ -1022,10 +1024,5 @@ class KafkaST extends AbstractST {
     @BeforeEach
     void setTestName(TestInfo testInfo) {
         testName = testInfo.getTestMethod().get().getName();
-    }
-
-    private String startTimeMeasuring() {
-        TimeMeasuringSystem.setTestName(testClass, testName);
-        return TimeMeasuringSystem.startOperation(Operation.TEST_EXECUTION);
     }
 }
