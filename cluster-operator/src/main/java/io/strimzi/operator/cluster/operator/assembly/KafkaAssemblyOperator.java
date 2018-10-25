@@ -361,15 +361,23 @@ public class KafkaAssemblyOperator extends AbstractAssemblyOperator<KubernetesCl
             if (!reason.isEmpty()) {
                 return zkSetOperations.getAsync(namespace, ZookeeperCluster.zookeeperClusterName(name))
                         .compose(ss -> {
-                            log.debug("{}: Rolling StatefulSet {} to {}", reconciliation, ss.getMetadata().getName(), reason);
-                            return zkSetOperations.maybeRollingUpdate(ss, true);
+                            if (ss != null) {
+                                log.debug("{}: Rolling StatefulSet {} to {}", reconciliation, ss.getMetadata().getName(), reason);
+                                return zkSetOperations.maybeRollingUpdate(ss, true);
+                            } else {
+                                return Future.succeededFuture();
+                            }
                         })
-                        .compose(i -> kafkaSetOperations.getAsync(namespace, KafkaCluster.kafkaClusterName(name)))
+                        .compose(ignored -> kafkaSetOperations.getAsync(namespace, KafkaCluster.kafkaClusterName(name)))
                         .compose(ss -> {
-                            log.debug("{}: Rolling StatefulSet {} to {}", reconciliation, ss.getMetadata().getName(), reason);
-                            return kafkaSetOperations.maybeRollingUpdate(ss, true);
+                            if (ss != null) {
+                                log.debug("{}: Rolling StatefulSet {} to {}", reconciliation, ss.getMetadata().getName(), reason);
+                                return kafkaSetOperations.maybeRollingUpdate(ss, true);
+                            } else {
+                                return Future.succeededFuture();
+                            }
                         })
-                        .compose(i -> {
+                        .compose(ignored -> {
                             if (topicOperator != null) {
                                 log.debug("{}: Rolling Deployment {} to {}", reconciliation, TopicOperator.topicOperatorName(name), reason);
                                 return deploymentOperations.rollingUpdate(namespace, TopicOperator.topicOperatorName(name), operationTimeoutMs);
