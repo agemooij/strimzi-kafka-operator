@@ -54,11 +54,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiFunction;
 
+import static io.strimzi.operator.common.operator.resource.AbstractScalableResourceOperator.ANNOTATION_GENERATION;
 import static io.strimzi.operator.common.operator.resource.AbstractScalableResourceOperator.STRIMZI_OPERATOR_DOMAIN;
 
 /**
@@ -1098,8 +1101,10 @@ public class KafkaAssemblyOperator extends AbstractAssemblyOperator<KubernetesCl
                                             configMapOperations.get(kafkaAssembly.getMetadata().getNamespace(), ((ExternalLogging) userOperator.getLogging()).getName()) :
                                             null) : null;
 
+                            Map<String, String> annotations = new HashMap<>();
+                            annotations.put(ANNOTATION_GENERATION, kafkaAssembly.getMetadata().getGeneration() == null ? "0" : kafkaAssembly.getMetadata().getGeneration().toString());
                             this.entityOperator = entityOperator;
-                            this.eoDeployment = entityOperator.generateDeployment(isOpenShift);
+                            this.eoDeployment = entityOperator.generateDeployment(annotations, isOpenShift);
                             this.topicOperatorMetricsAndLogsConfigMap = topicOperatorLogAndMetricsConfigMap;
                             this.userOperatorMetricsAndLogsConfigMap = userOperatorLogAndMetricsConfigMap;
                         }
