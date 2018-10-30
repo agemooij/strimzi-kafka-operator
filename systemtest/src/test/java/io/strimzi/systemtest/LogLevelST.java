@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static io.strimzi.test.k8s.BaseKubeClient.STATEFUL_SET;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static io.strimzi.test.StrimziExtension.REGRESSION;
 
 @ExtendWith(StrimziExtension.class)
 @Namespace(LogLevelST.NAMESPACE)
@@ -42,7 +43,7 @@ class LogLevelST extends AbstractST {
     }
 
     @Test
-    @Tag("release")
+    @Tag(REGRESSION)
     void testLogLevelError() {
         operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         String logLevel = "ERROR";
@@ -54,7 +55,7 @@ class LogLevelST extends AbstractST {
     }
 
     @Test
-    @Tag("release")
+    @Tag(REGRESSION)
     void testLogLevelWarn() {
         operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         String logLevel = "WARN";
@@ -66,7 +67,7 @@ class LogLevelST extends AbstractST {
     }
 
     @Test
-    @Tag("release")
+    @Tag(REGRESSION)
     void testLogLevelTrace() {
         operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         String logLevel = "TRACE";
@@ -78,7 +79,7 @@ class LogLevelST extends AbstractST {
     }
 
     @Test
-    @Tag("release")
+    @Tag(REGRESSION)
     void testLogLevelDebug() {
         operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         String logLevel = "DEBUG";
@@ -90,7 +91,7 @@ class LogLevelST extends AbstractST {
     }
 
     @Test
-    @Tag("release")
+    @Tag(REGRESSION)
     void testLogLevelFatal() {
         operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         String logLevel = "FATAL";
@@ -102,7 +103,7 @@ class LogLevelST extends AbstractST {
     }
 
     @Test
-    @Tag("release")
+    @Tag(REGRESSION)
     void testLogLevelOff() {
         operationID = startTimeMeasuring(Operation.TEST_EXECUTION);
         String logLevel = "OFF";
